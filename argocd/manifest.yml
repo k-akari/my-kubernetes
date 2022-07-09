@@ -4,13 +4,13 @@ metadata:
   name: main
   namespace: argocd
 spec:
-  project: project_name
+  project: default
   source:
     repoURL: https://github.com/k-akari/myk8s
     targetRevision: main
     path: ./main/
   destination:
-    server: https://1DFCC2A029F89F4E03506625C3F69416.gr7.ap-northeast-1.eks.amazonaws.com
+    server: https://kubernetes.default.svc
     namespace: main
   syncPolicy:
     automated: {}
