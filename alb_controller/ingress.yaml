@@ -15,10 +15,24 @@ spec:
         containers:
           - name: app
             image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-app:latest
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "200m"
+              limits:
+                memory: "128Mi"
+                cpu: "400m"
             ports:
               - containerPort: 8080
           - name: web
             image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-web:latest
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "200m"
+              limits:
+                memory: "128Mi"
+                cpu: "400m"
             ports: 
               - containerPort: 80
 ---
