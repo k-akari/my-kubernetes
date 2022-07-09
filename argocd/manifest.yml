@@ -1,18 +1,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: guestbook
+  name: main
   namespace: argocd
 spec:
   project: default
   source:
     repoURL: https://github.com/k-akari/myk8s
     targetRevision: HEAD
-    path: alb_controller
+    path: main
   destination:
-    server: https://77D10421D4032045BE6D44E60B0453E2.gr7.ap-northeast-1.eks.amazonaws.com
-    namespace: alb_controller
+    server: https://1DFCC2A029F89F4E03506625C3F69416.gr7.ap-northeast-1.eks.amazonaws.com
+    namespace: main
   syncPolicy:
     automated: {}
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
