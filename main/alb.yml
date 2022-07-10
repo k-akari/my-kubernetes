@@ -1,13 +1,12 @@
 apiVersion: external-secrets.io/v1beta1
 kind: SecretStore
 metadata:
-  name: example
-  namespace: example-ns
+  name: secret-store
+  namespace: main
 spec:
   provider:
     aws:
       service: SecretsManager
-      role: iam-role
       region: ap-northeast-1
       auth:
         jwt:
