@@ -1,7 +1,7 @@
 apiVersion: external-secrets.io/v1beta1
 kind: SecretStore
 metadata:
-  name: secret-store
+  name: db-secrets-store
   namespace: main
 spec:
   provider:
@@ -20,6 +20,33 @@ metadata:
     eks.amazonaws.com/role-arn: arn:aws:iam::575428171781:role/create-secret-from-secrets-manager-role
   name: account-to-access-secrets
   namespace: main
+---
+apiVersion: external-secrets.io/v1alpha1
+kind: ExternalSecret
+metadata:
+  name: example
+  labels:
+    app: front
+  annotations:
+    foo: bar
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: db-secrets-store
+    kind: SecretStore
+  target:
+    name: database-secrets
+    # `Owner`, `Merge`, `None` から指定する。デフォルトは `Owner`
+    # `Owner` は Secretリソースを作成し、 `.metadata.ownerReferences` をセットする。
+    # `Merge` は Secretリソースを作成しないが `.spec.data` の値をSecretリソースに反映させる
+    # `None` は Secretリソースを作成しない（将来的にはinjectorとして利用可能になる想定）
+    creationPolicy: Owner
+  data:
+  - secretKey: password
+  - secretKey: dbname
+  - secretKey: port
+  - secretKey: host
+  - secretKey: username
 ---
 apiVersion: apps/v1
 kind: Deployment
