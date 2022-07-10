@@ -7,6 +7,7 @@ spec:
   provider:
     aws:
       service: SecretsManager
+      role: create-secret-from-secrets-manager-role
       region: ap-northeast-1
       auth:
         jwt:
@@ -24,7 +25,7 @@ metadata:
 apiVersion: external-secrets.io/v1alpha1
 kind: ExternalSecret
 metadata:
-  name: example
+  name: external-secret
   labels:
     app: front
   annotations:
@@ -73,7 +74,33 @@ spec:
             memory: "128Mi"
             cpu: "400m"
         ports:
-          - containerPort: 8080
+        - containerPort: 8080
+        env:
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: host
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: port
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: password
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: dbname
       - name: web
         image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-web:latest
         resources:
