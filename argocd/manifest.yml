@@ -4,7 +4,7 @@ metadata:
   name: main
   namespace: argocd
 spec:
-  project: myeks
+  project: default
   source:
     repoURL: https://github.com/k-akari/myk8s
     targetRevision: main
