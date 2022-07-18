@@ -4,7 +4,7 @@ metadata:
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::575428171781:role/role-for-external-dns
   name: account-for-external-dns
-  namespace: external-dns
+  namespace: main
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
@@ -44,7 +44,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: external-dns
-  namespace: external-dns
+  namespace: main
 spec:
   strategy:
     type: Recreate
