@@ -59,7 +59,7 @@ spec:
       serviceAccountName: account-for-external-dns
       containers:
       - name: external-dns
-        image: k8s.gcr.io/external-dns/external-dns:latest
+        image: k8s.gcr.io/external-dns/external-dns:1.10.1
         args:
         - --source=ingress
         - --domain-filter=mycdk-app-example.tk
