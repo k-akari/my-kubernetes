@@ -64,40 +64,15 @@ while [ -z "$accessable_to_argocd" ]; do
 done
 
 # Login to ArgoCD
-expect -c "
-    set timeout 10
-    spawn argocd login $external_ip
-    expect \"WARNING\"
-    send \"y\n\"
-    expect \"Username\"
-    send \"$initial_user\n\"
-    expect \"Password\"
-    send \"$initial_password\n\"
-    exit 0
-"
-echo -e "\nSuccessfully logged into ArgoCD.\n"
+argocd login "$external_ip" --username admin --password "$initial_password" --insecure
 
 initial_secret=`kubectl get secret/argocd-initial-admin-secret -n argocd -o json | jq -r '.metadata.name'`
 if [ -n "$initial_secret" ]; then
   # Update password for admin
-  new_password=`openssl rand -base64 6`
-  echo "New Password    : $new_password"
-  expect -c "
-      set timeout 10
-      spawn argocd account update-password
-      expect \"*** Enter password\"
-      send \"$initial_password\n\"
-      expect \"*** Enter new password\"
-      send \"$new_password\n\"
-      expect \"*** Confirm new password\"
-      send \"$new_password\n\"
-      exit 0
-  "
-  echo -n "\nSuccessfully updated initial password for ArgoCD.\n"
+  argocd account update-password --account admin --current-password "$initial_password" --new-password "$initial_password" --insecure
 
   # Remove the secret resource containing initial password
-  #kubectl --namespace argocd delete secret/argocd-initial-admin-secret
-  #echo -n "Successfully delete secret, which stored the initial password for ArgoCD.\n"
+  kubectl --namespace argocd delete secret/argocd-initial-admin-secret
 else
   echo -n "Secret which stored the initial password for ArgoCD does not exist.\n"
 fi
