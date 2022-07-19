@@ -71,7 +71,7 @@ spec:
   ports:
   - name: http-port
     protocol: TCP
-    port: 8080
+    port: 80
     targetPort: 80
   selector:
     app: front
@@ -106,4 +106,4 @@ spec:
           service:
             name: front-nodeport-service
             port:
-              number: 8080
+              name: use-annotation

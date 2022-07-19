@@ -61,7 +61,6 @@ spec:
       - name: external-dns
         image: k8s.gcr.io/external-dns/external-dns:latest
         args:
-        - --source=service
         - --source=ingress
         - --domain-filter=mycdk-app-example.tk
         - --annotation-filter=alb.ingress.kubernetes.io/group.name
