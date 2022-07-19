@@ -69,7 +69,9 @@ argocd login "$external_ip" --username admin --password "$initial_password" --in
 initial_secret=`kubectl get secret/argocd-initial-admin-secret -n argocd -o json | jq -r '.metadata.name'`
 if [ -n "$initial_secret" ]; then
   # Update password for admin
-  argocd account update-password --account admin --current-password "$initial_password" --new-password "$initial_password" --insecure
+  new_password=`openssl rand -base64 6`
+  echo "New Password : $new_password"
+  argocd account update-password --account admin --current-password "$initial_password" --new-password "$new_password" --insecure
 
   # Remove the secret resource containing initial password
   kubectl --namespace argocd delete secret/argocd-initial-admin-secret
