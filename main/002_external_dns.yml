@@ -38,7 +38,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: account-for-external-dns
-  namespace: external-dns
+  namespace: main
 ---
 apiVersion: apps/v1
 kind: Deployment
