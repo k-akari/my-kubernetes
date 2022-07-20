@@ -98,8 +98,8 @@ metadata:
     # alb.ingress.kubernetes.io/success-codes: '200'
 spec:
   rules:
-  # - host: mycdk-app-example.tk
-  - http:
+  - host: mycdk-app-example.tk
+    http:
       paths:
       - path: /
         pathType: Prefix
