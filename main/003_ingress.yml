@@ -81,7 +81,7 @@ kind: Ingress
 metadata:
   name: front-ingress
   annotations:
-    kubernetes.io/ingress.class: alb
+    # kubernetes.io/ingress.class: alb
     # external-dns.alpha.kubernetes.io/hostname: mycdk-app-example.tk
     alb.ingress.kubernetes.io/group.name: "main-ingress"
     alb.ingress.kubernetes.io/scheme: internet-facing
