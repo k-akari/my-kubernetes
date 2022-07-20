@@ -62,6 +62,7 @@ spec:
         image: k8s.gcr.io/external-dns/external-dns:v0.12.0
         args:
         - --source=ingress
+        - --source=service
         - --domain-filter=mycdk-app-example.tk
         - --annotation-filter=alb.ingress.kubernetes.io/group.name
         - --provider=aws
