@@ -85,7 +85,7 @@ metadata:
     # external-dns.alpha.kubernetes.io/hostname: mycdk-app-example.tk
     alb.ingress.kubernetes.io/group.name: "main-ingress"
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
+    # alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
     # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     # alb.ingress.kubernetes.io/healthcheck-port: 80
@@ -97,6 +97,7 @@ metadata:
     # alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
     # alb.ingress.kubernetes.io/success-codes: '200'
 spec:
+  ingressClassName: alb
   rules:
   - host: mycdk-app-example.tk
     http:
