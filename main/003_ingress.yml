@@ -85,7 +85,7 @@ metadata:
     # external-dns.alpha.kubernetes.io/hostname: mycdk-app-example.tk
     alb.ingress.kubernetes.io/group.name: "main-ingress"
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
     # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     # alb.ingress.kubernetes.io/healthcheck-port: 80
