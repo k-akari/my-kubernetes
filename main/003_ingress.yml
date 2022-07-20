@@ -107,5 +107,5 @@ spec:
           service:
             name: front-nodeport-service
             port:
-              number: 80
+              number: 8080
               # name: use-annotation
