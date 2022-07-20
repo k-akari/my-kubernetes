@@ -45,6 +45,8 @@ kind: Deployment
 metadata:
   name: external-dns
   namespace: main
+  labels:
+    app: external-dns
 spec:
   strategy:
     type: Recreate
@@ -70,5 +72,8 @@ spec:
         - --aws-zone-type=public
         - --registry=txt
         - --txt-owner-id=eks-cluster
+        env:
+        - name: AWS_DEFAULT_REGION
+          value: ap-northeast-1
       securityContext:
         fsGroup: 65534
