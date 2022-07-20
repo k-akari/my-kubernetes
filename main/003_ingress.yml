@@ -101,8 +101,8 @@ spec:
   - host: mycdk-app-example.tk
     http:
       paths:
-      - path: /
-        pathType: Prefix
+      # - path: /
+      - pathType: Prefix
         backend:
           service:
             name: front-nodeport-service
