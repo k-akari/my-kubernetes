@@ -77,16 +77,22 @@ spec:
     app: front
 ---
 apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: alb
+spec:
+  controller: ingress.k8s.aws/alb
+---
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: front-ingress
   annotations:
-    kubernetes.io/ingress.class: alb
+    # kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/group.name: "main-ingress"
     alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
     # alb.ingress.kubernetes.io/target-type: ip
-    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     # alb.ingress.kubernetes.io/healthcheck-port: 80
     # alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     # alb.ingress.kubernetes.io/healthcheck-path: _status
@@ -96,7 +102,7 @@ metadata:
     # alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
     # alb.ingress.kubernetes.io/success-codes: '200'
 spec:
-  # ingressClassName: alb
+  ingressClassName: alb
   rules:
   - host: mycdk-app-example.tk
     http:
@@ -108,4 +114,3 @@ spec:
             name: front-nodeport-service
             port:
               number: 80
-              # name: use-annotation
