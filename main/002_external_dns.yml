@@ -60,7 +60,6 @@ spec:
         - --source=ingress
         - --source=service
         - --domain-filter=mycdk-app-example.tk
-        # - --annotation-filter="main-ingress"
         - --provider=aws
         - --policy=sync
         - --aws-zone-type=public
