@@ -6,10 +6,7 @@
 
 # Update kubeconfig
 aws eks update-kubeconfig --region ap-northeast-1 --name eks-cluster --profile akari_mfa
-
-# Install ESO from Helm chart repository
-helm repo add external-secrets https://charts.external-secrets.io
-helm install external-secrets external-secrets/external-secrets -n external-secrets --create-namespace --set installCRDs=true
+echo -e "\n"
 
 # Install ArgoCD
 ns_argocd=`kubectl get ns -o json | jq -r '.items[] | .metadata.name' | grep argocd`
@@ -19,10 +16,13 @@ if [ -z "$ns_argocd" ]; then
 else
   echo -e "Namespace of argocd already exists."
 fi
+echo -e "\n"
 
 svc_argocd=`kubectl get svc -n argocd -o json | jq -r '.items[] | .metadata.name' | grep argocd-applicationset-controller`
 if [ -z "$svc_argocd" ]; then
+  echo -e "\nStart to apply ArgoCD manifest.\n"
   kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  echo -e "\nApplying ArgoCD manifest.\n"
   while [ -z "$svc_argocd" ]; do
     echo -n "."
     sleep 1
@@ -36,12 +36,15 @@ else
 fi
 
 # Show External IP, Initial User, and Initial Password
+exists_argocd_server=`kubectl get svc argocd-server -n argocd -o json > /dev/null 2>&1`
+if [ -n "$exists_argocd_server" ]; then
+  while [ -n "$exists_argocd_server" ]; do
+    echo -n "."
+    sleep 1
+    exists_argocd_server=`kubectl get svc argocd-server -n argocd -o json > /dev/null 2>&1`
+  done
+fi
 external_ip=`kubectl get svc argocd-server -n argocd -o json | jq -r '.status.loadBalancer.ingress[].hostname'`
-while [ -z "$external_ip" ]; do
-  echo -n "."
-  sleep 1
-  external_ip=`kubectl get svc argocd-server -n argocd -o json | jq -r '.status.loadBalancer.ingress[].hostname'`
-done
 echo -e "\n"
 initial_user="admin"
 initial_password=`kubectl -n argocd get secret/argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo`
