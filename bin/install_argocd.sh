@@ -80,4 +80,4 @@ else
 fi
 
 # Create application
-kubectl apply -f /Users/akarikeisuke/Documents/private/myk8s/argocd/manifest.yml
+kubectl apply -f ./application.yaml

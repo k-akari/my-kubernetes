@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: main
+  namespace: argocd
+  annotations:
+    argocd-image-updater.argoproj.io/write-back-method: argocd
+    argocd-image-updater.argoproj.io/image-list: my-image=575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-app
+    argocd-image-updater.argoproj.io/my-image.update-strategy: latest
+    argocd-image-updater.argoproj.io/my-image.ignore-tags: latest
+spec:
+  project: default
+  source:
+    chart: mychart
+    repoURL: https://k-akari.github.io/myk8s
+    targetRevision: 0.1.0
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
