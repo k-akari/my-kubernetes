@@ -3,12 +3,16 @@ entries:
   mychart:
   - apiVersion: v2
     appVersion: 1.16.0
-    created: "2022-07-27T20:49:13.475763+09:00"
+    created: "2022-07-28T10:22:54.828506+09:00"
+    dependencies:
+    - name: external-secrets
+      repository: https://charts.external-secrets.io
+      version: 0.5.8
     description: A Helm chart for Kubernetes
-    digest: 5dbb2ac060cd18328e9ae42b6418efbe7b6a74d3d82d0445a03476f8516f9a20
+    digest: aefeceec033d73f8ffed95ae167b94bdf4ba87ddfeb7affb5dadff6c29e10928
     name: mychart
     type: application
     urls:
     - https://k-akari.github.io/myk8s/mychart-0.1.0.tgz
     version: 0.1.0
-generated: "2022-07-27T20:49:13.475457+09:00"
+generated: "2022-07-28T10:22:54.826581+09:00"
