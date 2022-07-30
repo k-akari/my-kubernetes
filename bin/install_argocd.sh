@@ -8,6 +8,10 @@
 aws eks update-kubeconfig --region ap-northeast-1 --name eks-cluster --profile akari_mfa
 echo -e "\n"
 
+# Install ESO from Helm chart repository
+helm repo add external-secrets https://charts.external-secrets.io
+helm install external-secrets external-secrets/external-secrets -n external-secrets --create-namespace --set installCRDs=true
+
 # Install ArgoCD
 ns_argocd=`kubectl get ns -o json | jq -r '.items[] | .metadata.name' | grep argocd`
 if [ -z "$ns_argocd" ]; then
@@ -22,26 +26,38 @@ if [ -z "$svc_argocd" ]; then
   echo -e "Start to apply ArgoCD manifest.\n"
   kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
   echo -e "\nApplying ArgoCD manifest"
+  count=0
   while [ -z "$svc_argocd" ]; do
+    count=$count+1
+    if [ $count -gt 10 ]; then
+      break
+    fi
+
     echo -n "."
     sleep 1
     svc_argocd=`kubectl get svc -n argocd -o json | jq -r '.items[] | .metadata.name' | grep argocd-applicationset-controller`
   done
-  echo -e "\nSuccessfully applied ArgoCD manifest.\n"
+  echo -e "\nSuccessfully applied ArgoCD manifest\n"
   kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
-  echo -e "Successfully changed ArgoCD server to LoadBalancer type.\n"
+  echo -e "Successfully changed ArgoCD server to LoadBalancer type\n"
 else
-  echo -e "ArgoCD manifest has already been applied.\n"
+  echo -e "ArgoCD manifest has already been applied\n"
 fi
 
 # Get External IP
-external_ip=`kubectl get svc argocd-server -n argocd -o json 2>/dev/null | jq -r '.status.loadBalancer.ingress[].hostname'`
+external_ip=`kubectl get svc argocd-server -n argocd -o json 2>/dev/null | jq -r '.status.loadBalancer.ingress[].hostname' 2>/dev/null`
 if [[ -z $external_ip ]]; then
   echo -e "\nWaiting to start argocd-server"
+  count=0
   while [[ -z $external_ip ]]; do
+    count=$count+1
+    if [ $count -gt 10 ]; then
+      break
+    fi
+
     echo -n "."
     sleep 1
-    external_ip=`kubectl get svc argocd-server -n argocd -o json 2>/dev/null | jq -r '.status.loadBalancer.ingress[].hostname'`
+    external_ip=`kubectl get svc argocd-server -n argocd -o json 2>/dev/null | jq -r '.status.loadBalancer.ingress[].hostname' 2>/dev/null`
   done
 fi
 echo -e "\n"
@@ -51,6 +67,14 @@ initial_user="admin"
 
 # Get Initial Password
 initial_password=`kubectl -n argocd get secret/argocd-initial-admin-secret -o jsonpath="{.data.password}" 2>/dev/null | base64 -d; echo`
+if [[ -z $initial_password ]]; then
+  echo -e "\nWaiting to start secret/argocd-initial-admin-secret"
+  while [[ -z $initial_password ]]; do
+    echo -n "."
+    sleep 1
+    initial_password=`kubectl -n argocd get secret/argocd-initial-admin-secret -o jsonpath="{.data.password}" 2>/dev/null | base64 -d; echo`
+  done
+fi
 
 # Login to ArgoCD
 if [ -n "$initial_password" ]; then
@@ -83,4 +107,4 @@ echo "***********************************"
 echo -e "\n"
 
 # Deploy application
-kubectl apply -f ./application.yaml
+kubectl apply -f ./manifests/overlays/production/production.yaml

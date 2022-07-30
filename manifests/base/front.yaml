@@ -62,36 +62,54 @@ spec:
         ports: 
         - containerPort: 80
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: external-dns
-  namespace: main
-  labels:
-    app: external-dns
+  name: front-nodeport-service
 spec:
-  strategy:
-    type: Recreate
+  type: NodePort
+  ports:
+  - name: http-port
+    protocol: TCP
+    port: 80
+    targetPort: 80
   selector:
-    matchLabels:
-      app: external-dns
-  template:
-    metadata:
-      labels:
-        app: external-dns
-    spec:
-      serviceAccountName: account-for-external-dns
-      containers:
-      - name: external-dns
-        image: k8s.gcr.io/external-dns/external-dns:v0.12.0
-        args:
-        - --source=ingress
-        - --source=service
-        - --domain-filter=mycdk-app-example.tk
-        - --provider=aws
-        - --policy=sync
-        - --aws-zone-type=public
-        - --registry=txt
-        - --txt-owner-id=eks-cluster
-      securityContext:
-        fsGroup: 65534
+    app: front
+---
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: alb
+spec:
+  controller: ingress.k8s.aws/alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: front-ingress
+  annotations:
+    alb.ingress.kubernetes.io/group.name: "main-ingress"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-port: '80'
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-path: '/health_check'
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '15'
+    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: '5'
+    alb.ingress.kubernetes.io/healthy-threshold-count: '2'
+    alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
+    alb.ingress.kubernetes.io/success-codes: '200'
+spec:
+  ingressClassName: alb
+  rules:
+  - host: mycdk-app-example.tk
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: front-nodeport-service
+            port:
+              number: 80
