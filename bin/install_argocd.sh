@@ -8,10 +8,6 @@
 aws eks update-kubeconfig --region ap-northeast-1 --name eks-cluster --profile akari_mfa
 echo -e "\n"
 
-# Install ESO from Helm chart repository
-#helm repo add external-secrets https://charts.external-secrets.io
-#helm install external-secrets external-secrets/external-secrets -n external-secrets --create-namespace --set installCRDs=true
-
 # Install ArgoCD
 ns_argocd=`kubectl get ns -o json | jq -r '.items[] | .metadata.name' | grep argocd`
 if [ -z "$ns_argocd" ]; then
@@ -39,29 +35,26 @@ else
 fi
 
 # Get External IP
-error_argocd_server=`kubectl get svc argocd-server -n argocd -o json 2>&1 > /dev/null`
-if [ -n "$error_argocd_server" ]; then
+external_ip=`kubectl get svc argocd-server -n argocd -o json 2>/dev/null | jq -r '.status.loadBalancer.ingress[].hostname'`
+if [[ -z $external_ip ]]; then
   echo -e "\nWaiting to start argocd-server"
-  while [ -n "$error_argocd_server" ]; do
+  while [[ -z $external_ip ]]; do
     echo -n "."
     sleep 1
-    error_argocd_server=`kubectl get svc argocd-server -n argocd -o json 2>&1 > /dev/null`
+    external_ip=`kubectl get svc argocd-server -n argocd -o json 2>/dev/null | jq -r '.status.loadBalancer.ingress[].hostname'`
   done
 fi
-external_ip=`kubectl get svc argocd-server -n argocd -o json | jq -r '.status.loadBalancer.ingress[].hostname'`
 echo -e "\n"
 
 # Get Initial User
 initial_user="admin"
 
 # Get Initial Password
-error_argocd_initial_admin_secret=`kubectl -n argocd get secret/argocd-initial-admin-secret 2>&1 > /dev/null`
-if [ -z "$error_argocd_initial_admin_secret" ]; then
-  initial_password=`kubectl -n argocd get secret/argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo`
-fi
+initial_password=`kubectl -n argocd get secret/argocd-initial-admin-secret -o jsonpath="{.data.password}" 2>/dev/null | base64 -d; echo`
 
 # Login to ArgoCD
 if [ -n "$initial_password" ]; then
+  echo -e "\nLogin to Argo CD" 
   accessable_to_argocd=`nslookup -type=ns $external_ip | grep "Authoritative answers can be found from"`
   while [ -z "$accessable_to_argocd" ]; do
     echo -n "."
@@ -72,11 +65,13 @@ if [ -n "$initial_password" ]; then
 
   # Update password for admin
   new_password=`openssl rand -base64 6`
-  echo "New Password : $new_password"
+  echo -e "\nChange your login password to $new_password"
   argocd account update-password --account admin --current-password "$initial_password" --new-password "$new_password" --insecure
+  echo -e "\n"
 
   # Remove the secret resource containing initial password
   kubectl --namespace argocd delete secret/argocd-initial-admin-secret
+  echo -e "\n"
 fi
 
 echo "***********************************"
