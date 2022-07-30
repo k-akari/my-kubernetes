@@ -9,8 +9,8 @@ aws eks update-kubeconfig --region ap-northeast-1 --name eks-cluster --profile a
 echo -e "\n"
 
 # Install ESO from Helm chart repository
-helm repo add external-secrets https://charts.external-secrets.io
-helm install external-secrets external-secrets/external-secrets -n external-secrets --create-namespace --set installCRDs=true
+#helm repo add external-secrets https://charts.external-secrets.io
+#helm install external-secrets external-secrets/external-secrets -n external-secrets --create-namespace --set installCRDs=true
 
 # Install ArgoCD
 ns_argocd=`kubectl get ns -o json | jq -r '.items[] | .metadata.name' | grep argocd`
@@ -20,13 +20,12 @@ if [ -z "$ns_argocd" ]; then
 else
   echo -e "Namespace of argocd already exists.\n"
 fi
-echo -e "\n"
 
 svc_argocd=`kubectl get svc -n argocd -o json | jq -r '.items[] | .metadata.name' | grep argocd-applicationset-controller`
 if [ -z "$svc_argocd" ]; then
-  echo -e "\nStart to apply ArgoCD manifest.\n"
+  echo -e "Start to apply ArgoCD manifest.\n"
   kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-  echo -e "\nApplying ArgoCD manifest.\n"
+  echo -e "\nApplying ArgoCD manifest"
   while [ -z "$svc_argocd" ]; do
     echo -n "."
     sleep 1
