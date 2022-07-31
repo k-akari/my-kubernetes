@@ -112,6 +112,8 @@ if [ -n "$initial_password" ]; then
   # Remove the secret resource containing initial password
   kubectl --namespace argocd delete secret/argocd-initial-admin-secret
   echo -e "\n"
+else
+  :
 fi
 
 echo "*********************************************************************************************"
