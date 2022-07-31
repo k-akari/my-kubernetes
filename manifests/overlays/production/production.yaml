@@ -1,13 +1,48 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
+  name: argocd-image-updater
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: argocd-image-updater
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    targetRevision: 0.6.0
+    helm:
+      values: |
+        config:
+          logLevel: "info"
+    chart: argocd-image-updater
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
   name: main
   namespace: argocd
   annotations:
-    argocd-image-updater.argoproj.io/write-back-method: argocd
-    argocd-image-updater.argoproj.io/image-list: app-image=575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-app
-    argocd-image-updater.argoproj.io/my-image.update-strategy: latest
-    argocd-image-updater.argoproj.io/my-image.ignore-tags: latest
+    argocd-image-updater.argoproj.io/write-back-method: git
+    argocd-image-updater.argoproj.io/write-back-target: kustomization:.
+    argocd-image-updater.argoproj.io/git-branch: main
+    argocd-image-updater.argoproj.io/image-list: app-image=575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-app,web-image=575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-web
+    argocd-image-updater.argoproj.io/app-image.update-strategy: latest
+    argocd-image-updater.argoproj.io/app-image.ignore-tags: latest
+    argocd-image-updater.argoproj.io/app-image.allow-tags: regexp:^[0-9a-f]{5,40}$
+    argocd-image-updater.argoproj.io/web-image.update-strategy: latest
+    argocd-image-updater.argoproj.io/web-image.ignore-tags: latest
+    argocd-image-updater.argoproj.io/web-image.allow-tags: regexp:^[0-9a-f]{5,40}$
+    argocd-image-updater.argoproj.io/migration-image.update-strategy: latest
+    argocd-image-updater.argoproj.io/migration-image.ignore-tags: latest
+    argocd-image-updater.argoproj.io/migration-image.allow-tags: regexp:^[0-9a-f]{5,40}$
 spec:
   project: default
   source:

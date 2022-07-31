@@ -25,7 +25,6 @@ svc_argocd=`kubectl get svc -n argocd -o json | jq -r '.items[] | .metadata.name
 if [ -z "$svc_argocd" ]; then
   echo -e "Start to apply ArgoCD manifest.\n"
   kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
   echo -e "\nApplying ArgoCD manifest"
   count=0
   while [ -z "$svc_argocd" ]; do

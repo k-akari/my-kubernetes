@@ -4,3 +4,8 @@ commonLabels:
   env: production
 resources:
   - ../../base
+images:
+  - name: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-app
+    newTag: 000733f4ce7071bbab51070ec3d959a30c05a056
+  - name: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-web
+    newTag: 000733f4ce7071bbab51070ec3d959a30c05a056
