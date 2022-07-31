@@ -11,25 +11,27 @@ echo -e "\n"
 # Install ESO from Helm chart repository
 helm repo add external-secrets https://charts.external-secrets.io
 helm install external-secrets external-secrets/external-secrets -n external-secrets --create-namespace --set installCRDs=true
+echo -e "\n"
 
 # Install ArgoCD
 ns_argocd=`kubectl get ns -o json | jq -r '.items[] | .metadata.name' | grep argocd`
 if [ -z "$ns_argocd" ]; then
   kubectl create namespace argocd
-  echo -e "Successfully created namespace of argocd.\n"
 else
-  echo -e "Namespace of argocd already exists.\n"
+  echo -e "Namespace of argocd already exists\n"
 fi
 
 svc_argocd=`kubectl get svc -n argocd -o json | jq -r '.items[] | .metadata.name' | grep argocd-applicationset-controller`
 if [ -z "$svc_argocd" ]; then
   echo -e "Start to apply ArgoCD manifest.\n"
   kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
   echo -e "\nApplying ArgoCD manifest"
   count=0
   while [ -z "$svc_argocd" ]; do
-    count=$count+1
+    count=`expr $count + 1`
     if [ $count -gt 10 ]; then
+      echo -e "Timeout to apply ArgoCD manifest\n"
       break
     fi
 
@@ -50,8 +52,9 @@ if [[ -z $external_ip ]]; then
   echo -e "\nWaiting to start argocd-server"
   count=0
   while [[ -z $external_ip ]]; do
-    count=$count+1
+    count=`expr $count + 1`
     if [ $count -gt 10 ]; then
+      echo -e "Timeout to start up argocd-server"
       break
     fi
 
@@ -69,7 +72,14 @@ initial_user="admin"
 initial_password=`kubectl -n argocd get secret/argocd-initial-admin-secret -o jsonpath="{.data.password}" 2>/dev/null | base64 -d; echo`
 if [[ -z $initial_password ]]; then
   echo -e "\nWaiting to start secret/argocd-initial-admin-secret"
+  count=0
   while [[ -z $initial_password ]]; do
+    count=`expr $count + 1`
+    if [ $count -gt 20 ]; then
+      echo -e "Timeout to start up secret/argocd-initial-admin-secret"
+      break
+    fi
+
     echo -n "."
     sleep 1
     initial_password=`kubectl -n argocd get secret/argocd-initial-admin-secret -o jsonpath="{.data.password}" 2>/dev/null | base64 -d; echo`
@@ -80,7 +90,14 @@ fi
 if [ -n "$initial_password" ]; then
   echo -e "\nLogin to Argo CD" 
   accessable_to_argocd=`nslookup -type=ns $external_ip | grep "Authoritative answers can be found from"`
+  count=0
   while [ -z "$accessable_to_argocd" ]; do
+    count=`expr $count + 1`
+    if [ $count -gt 90 ]; then
+      echo -e "Timeout to login to Argo CD"
+      break
+    fi
+
     echo -n "."
     sleep 1
     accessable_to_argocd=`nslookup -type=ns $external_ip | grep "Authoritative answers can be found from"`
@@ -98,12 +115,12 @@ if [ -n "$initial_password" ]; then
   echo -e "\n"
 fi
 
-echo "***********************************"
+echo "*********************************************************************************************"
 echo "External IP      : $external_ip"
 echo "Initial User     : $initial_user"
 echo "Initial Password : $initial_password"
 echo "New Password     : $new_password"
-echo "***********************************"
+echo "*********************************************************************************************"
 echo -e "\n"
 
 # Deploy application
