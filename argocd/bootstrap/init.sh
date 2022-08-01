@@ -8,11 +8,6 @@
 aws eks update-kubeconfig --region ap-northeast-1 --name eks-cluster --profile akari_mfa
 echo -e "\n"
 
-# Install ESO from Helm chart repository
-helm repo add external-secrets https://charts.external-secrets.io
-helm install external-secrets external-secrets/external-secrets -n external-secrets --create-namespace --set installCRDs=true
-echo -e "\n"
-
 # Install ArgoCD
 ns_argocd=`kubectl get ns -o json | jq -r '.items[] | .metadata.name' | grep argocd`
 if [ -z "$ns_argocd" ]; then
@@ -30,7 +25,7 @@ if [ -z "$svc_argocd" ]; then
   while [ -z "$svc_argocd" ]; do
     count=`expr $count + 1`
     if [ $count -gt 10 ]; then
-      echo -e "Timeout to apply ArgoCD manifest\n"
+      echo -e "Timed out to apply ArgoCD manifest\n"
       break
     fi
 
@@ -53,7 +48,7 @@ if [[ -z $external_ip ]]; then
   while [[ -z $external_ip ]]; do
     count=`expr $count + 1`
     if [ $count -gt 10 ]; then
-      echo -e "Timeout to start up argocd-server"
+      echo -e "Timed out waiting for argocd-server to start"
       break
     fi
 
@@ -75,7 +70,7 @@ if [[ -z $initial_password ]]; then
   while [[ -z $initial_password ]]; do
     count=`expr $count + 1`
     if [ $count -gt 20 ]; then
-      echo -e "Timeout to start up secret/argocd-initial-admin-secret"
+      echo -e "Timed out waiting for secret/argocd-initial-admin-secret to start"
       break
     fi
 
@@ -93,7 +88,7 @@ if [ -n "$initial_password" ]; then
   while [ -z "$accessable_to_argocd" ]; do
     count=`expr $count + 1`
     if [ $count -gt 90 ]; then
-      echo -e "Timeout to login to Argo CD"
+      echo -e "Timed out to login to Argo CD"
       break
     fi
 
@@ -125,4 +120,5 @@ echo "**************************************************************************
 echo -e "\n"
 
 # Deploy application
-kubectl apply -f ./manifests/overlays/production/production.yaml
+kubectl apply -f ./argocd/bootstrap/manifests/project.yaml
+kubectl apply -f ./argocd/bootstrap/manifests/application.yaml
