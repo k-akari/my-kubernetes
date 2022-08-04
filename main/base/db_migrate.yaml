@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: db-migrator
-        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-migration:5041f6527721234579e13e34ded621e21d8505cf
+        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-migration:10b4432485593f138a57a3efbff67750473f0d03
         command:
         - "/bin/ash"
         args:
