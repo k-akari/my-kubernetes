@@ -6,6 +6,8 @@ resources:
 - ../../base
 images:
 - name: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-app
-  newTag: 10b4432485593f138a57a3efbff67750473f0d03
+  newTag: v0.0.1
 - name: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-web
-  newTag: 10b4432485593f138a57a3efbff67750473f0d03
+  newTag: v0.0.1
+- name: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-migration
+  newTag: v0.0.1
