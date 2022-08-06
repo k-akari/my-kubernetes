@@ -4,6 +4,6 @@ namespace: argocd
 resources:
   - https://raw.githubusercontent.com/argoproj-labs/argocd-image-updater/stable/manifests/install.yaml
 patchesStrategicMerge:
-  - configmap.yaml
+  - config_map.yaml
   - deployment.yaml
-  - rbac.yaml
+  - service_account.yaml
