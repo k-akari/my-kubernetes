@@ -103,7 +103,7 @@ metadata:
 spec:
   ingressClassName: alb
   rules:
-  - host: mycdk-app-example.tk
+  - host: mycdk-myk8s-example.com
     http:
       paths:
       - path: /

@@ -59,7 +59,7 @@ spec:
         args:
         - --source=ingress
         - --source=service
-        - --domain-filter=mycdk-app-example.tk
+        - --domain-filter=mycdk-myk8s-example.com
         - --provider=aws
         - --policy=sync
         - --aws-zone-type=public
