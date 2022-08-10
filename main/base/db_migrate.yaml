@@ -1,20 +1,55 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: schema-migrate-
+  name: db-migrator
   annotations:
     argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/hook-delete-policy: HookSucceeded
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 spec:
+  activeDeadlineSeconds: 120
+  backoffLimit: 0
   template:
     spec:
+      restartPolicy: Never
       containers:
       - name: db-migrator
         image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-migration:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+          limits:
+            memory: "128Mi"
+            cpu: "400m"
         command:
         - "/bin/ash"
         args:
         - "-c"
         - "/app/cmd"
-      restartPolicy: Never
-  backoffLimit: 2
+        env:
+        - name: DB_HOST
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: host
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: port
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: password
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: database-secrets
+              key: dbname
