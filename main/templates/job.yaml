@@ -3,8 +3,8 @@ kind: Job
 metadata:
   name: db-migrator
   annotations:
-    argocd.argoproj.io/hook: PreSync
-    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    helm.sh/hook: pre-install, pre-upgrade
+    helm.sh/hook-delete-policy: hook-succeeded
 spec:
   activeDeadlineSeconds: 120
   backoffLimit: 0

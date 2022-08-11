@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  main:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2022-08-12T09:14:41.413054+09:00"
+    description: A Helm chart for Kubernetes
+    digest: 50c0fad79529eaf12ad09f29d002314cb081a38e58509c37a26f1f8e8987ea65
+    name: main
+    type: application
+    urls:
+    - https://k-akari.github.io/myk8s/main-0.1.0.tgz
+    version: 0.1.0
+generated: "2022-08-12T09:14:41.412538+09:00"
