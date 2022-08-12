@@ -10,7 +10,7 @@ spec:
   source:
     chart: main
     repoURL: https://k-akari.github.io/myk8s/
-    targetRevision: 0.2.0
+    targetRevision: 0.1.0
   destination:
     server: https://kubernetes.default.svc
     namespace: main
