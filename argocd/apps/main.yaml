@@ -8,9 +8,14 @@ metadata:
 spec:
   project: myproject
   source:
-    chart: main
-    repoURL: https://k-akari.github.io/myk8s/
-    targetRevision: 0.1.0
+    repoURL: https://github.com/k-akari/myk8s.git
+    path: main/
+    targetRevision: main
+    helm:
+      releaseName: myk8s
+      version: v3
+      valueFiles:
+      - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: main

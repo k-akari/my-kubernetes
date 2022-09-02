@@ -48,7 +48,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-app:v0.0.1
+        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-app:{{ .Values.imageTag }}
         resources:
           requests:
             memory: "64Mi"
@@ -85,7 +85,7 @@ spec:
               name: database-secrets
               key: dbname
       - name: web
-        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-web:v0.0.1
+        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-web:{{ .Values.imageTag }}
         resources:
           requests:
             memory: "64Mi"
