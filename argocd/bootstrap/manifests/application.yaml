@@ -8,11 +8,14 @@ metadata:
 spec:
   project: myproject
   source:
-    path: argocd/apps
-    repoURL: https://github.com/k-akari/myk8s
+    repoURL: https://github.com/k-akari/myk8s.git
+    path: argocd/apps/
     targetRevision: main
-    directory:
-      recurse: true
+    helm:
+      releaseName: myk8s
+      version: v3
+      valueFiles:
+      - values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

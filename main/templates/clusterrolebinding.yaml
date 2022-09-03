@@ -9,3 +9,4 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: account-for-external-dns
+  namespace: {{ .Values.namespace }}
