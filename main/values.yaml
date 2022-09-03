@@ -6,7 +6,7 @@ domainName: mycdk-myk8s-example.com
 clusterName: eks-cluster
 front:
   replicaCount: 2
-  imageTag: v0.0.1
+  imageTag: a5a7b5a7eb1f6c3902a8bbf3f41760f1fc5bd0e2
   resources:
     app:
       requests:
@@ -33,18 +33,18 @@ externalDns:
       cpu: 600m
       memory: 512Mi
 dbSecrets:
-- envName: DB_HOST
-  secretName: database-secrets
-  key: host
-- envName: DB_PORT
-  secretName: database-secrets
-  key: port
-- envName: DB_USER
-  secretName: database-secrets
-  key: username
-- envName: DB_PASSWORD
-  secretName: database-secrets
-  key: password
-- envName: DB_NAME
-  secretName: database-secrets
-  key: dbname
+  - envName: DB_HOST
+    secretName: database-secrets
+    key: host
+  - envName: DB_PORT
+    secretName: database-secrets
+    key: port
+  - envName: DB_USER
+    secretName: database-secrets
+    key: username
+  - envName: DB_PASSWORD
+    secretName: database-secrets
+    key: password
+  - envName: DB_NAME
+    secretName: database-secrets
+    key: dbname
