@@ -6,6 +6,8 @@ metadata:
     helm.sh/hook: pre-install, pre-upgrade
     helm.sh/hook-delete-policy: hook-succeeded
     helm.sh/hook-weight: "-1"
+  labels:
+    {{- include "front.labels" . | nindent 4 }}
 spec:
   activeDeadlineSeconds: 120
   backoffLimit: 0
@@ -29,28 +31,10 @@ spec:
         - "-c"
         - "/app/cmd"
         env:
-        - name: DB_HOST
+        {{- range .Values.dbSecrets }}
+        - name: {{ .envName }}
           valueFrom:
             secretKeyRef:
-              name: database-secrets
-              key: host
-        - name: DB_PORT
-          valueFrom:
-            secretKeyRef:
-              name: database-secrets
-              key: port
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: database-secrets
-              key: username
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: database-secrets
-              key: password
-        - name: DB_NAME
-          valueFrom:
-            secretKeyRef:
-              name: database-secrets
-              key: dbname
+              name: {{ .secretName }}
+              key: {{ .key }}
+        {{- end -}}

@@ -1,3 +1,54 @@
 # comment
 namespace: main
-imageTag: v0.0.1
+fullnameOverride: ""
+nameOverride: ""
+
+domainName: mycdk-myk8s-example.com
+clusterName: eks-cluster
+
+front:
+  replicaCount: 2
+  imageTag: v0.0.1
+  resources:
+    app:
+      requests:
+        cpu: 200m
+        memory: 64Mi
+      limits:
+        cpu: 600m
+        memory: 512Mi
+    web:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+
+externalDns:
+  replicaCount: 1
+  imageTag: v0.12.2
+  resources:
+    requests:
+      cpu: 200m
+      memory: 64Mi
+    limits:
+      cpu: 600m
+      memory: 512Mi
+
+dbSecrets:
+- envName: DB_HOST
+  secretName: database-secrets
+  key: host
+- envName: DB_PORT
+  secretName: database-secrets
+  key: port
+- envName: DB_USER
+  secretName: database-secrets
+  key: username
+- envName: DB_PASSWORD
+  secretName: database-secrets
+  key: password
+- envName: DB_NAME
+  secretName: database-secrets
+  key: dbname

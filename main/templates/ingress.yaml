@@ -15,10 +15,12 @@ metadata:
     alb.ingress.kubernetes.io/healthy-threshold-count: '2'
     alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
     alb.ingress.kubernetes.io/success-codes: '200'
+  labels:
+    {{- include "front.labels" . | nindent 4 }}
 spec:
   ingressClassName: {{ include "front.fullname" . }}
   rules:
-  - host: mycdk-myk8s-example.com
+  - host: {{ .Values.domainName }}
     http:
       paths:
       - path: /

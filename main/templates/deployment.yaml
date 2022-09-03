@@ -3,31 +3,34 @@ kind: Deployment
 metadata:
   name: {{ include "externalDns.fullname" . }}
   labels:
-    app: external-dns
+    {{- include "externalDns.labels" . | nindent 4 }}
 spec:
+  replicas: {{ .Values.externalDns.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: external-dns
+      {{- include "externalDns.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: external-dns
+        {{- include "externalDns.selectorLabels" . | nindent 8 }}
     spec:
       serviceAccountName: {{ include "externalDns.fullname" . }}
       containers:
       - name: external-dns
-        image: k8s.gcr.io/external-dns/external-dns:v0.12.2
+        image: k8s.gcr.io/external-dns/external-dns:{{ .Values.externalDns.imageTag }}
         args:
         - --source=ingress
         - --source=service
-        - --domain-filter=mycdk-myk8s-example.com
+        - --domain-filter={{ .Values.domainName }}
         - --provider=aws
         - --policy=sync
         - --aws-zone-type=public
         - --registry=txt
-        - --txt-owner-id=eks-cluster
+        - --txt-owner-id={{ .Values.clusterName }}
+        resources:
+          {{- toYaml .Values.externalDns.resources | nindent 10 }}
       securityContext:
         fsGroup: 65534
 ---
@@ -35,62 +38,36 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "front.fullname" . }}
+  labels:
+    {{- include "front.labels" . | nindent 4 }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.front.replicaCount }}
   selector:
     matchLabels:
-      app: front
+      {{- include "front.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        app: front
+        {{- include "front.selectorLabels" . | nindent 8 }}
     spec:
       containers:
       - name: app
-        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-app:{{ .Values.imageTag }}
+        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-app:{{ .Values.front.imageTag }}
         resources:
-          requests:
-            memory: "64Mi"
-            cpu: "200m"
-          limits:
-            memory: "128Mi"
-            cpu: "400m"
+          {{- toYaml .Values.front.resources.app | nindent 10 }}
         ports:
         - containerPort: 8080
         env:
-        - name: DB_HOST
+        {{- range .Values.dbSecrets }}
+        - name: {{ .envName }}
           valueFrom:
             secretKeyRef:
-              name: database-secrets
-              key: host
-        - name: DB_PORT
-          valueFrom:
-            secretKeyRef:
-              name: database-secrets
-              key: port
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: database-secrets
-              key: username
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: database-secrets
-              key: password
-        - name: DB_NAME
-          valueFrom:
-            secretKeyRef:
-              name: database-secrets
-              key: dbname
+              name: {{ .secretName }}
+              key: {{ .key }}
+        {{- end }}
       - name: web
-        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-web:{{ .Values.imageTag }}
+        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-web:{{ .Values.front.imageTag }}
         resources:
-          requests:
-            memory: "64Mi"
-            cpu: "200m"
-          limits:
-            memory: "128Mi"
-            cpu: "400m"
+          {{- toYaml .Values.front.resources.web | nindent 10 }}
         ports: 
         - containerPort: 80
