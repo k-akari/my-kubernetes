@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: external-dns
+  name: {{ include "externalDns.fullname" . }}
   labels:
     app: external-dns
 spec:
@@ -15,7 +15,7 @@ spec:
       labels:
         app: external-dns
     spec:
-      serviceAccountName: account-for-external-dns
+      serviceAccountName: {{ include "externalDns.fullname" . }}
       containers:
       - name: external-dns
         image: k8s.gcr.io/external-dns/external-dns:v0.12.2
@@ -34,7 +34,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: front-deployment
+  name: {{ include "front.fullname" . }}
 spec:
   replicas: 2
   selector:

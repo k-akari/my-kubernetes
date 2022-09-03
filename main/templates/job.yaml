@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: db-migrator
+  name: {{ include "front.fullname" . }}
   annotations:
     helm.sh/hook: pre-install, pre-upgrade
     helm.sh/hook-delete-policy: hook-succeeded

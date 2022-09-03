@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: front-ingress
+  name: {{ include "front.fullname" . }}
   annotations:
     alb.ingress.kubernetes.io/group.name: "main-ingress"
     alb.ingress.kubernetes.io/scheme: internet-facing
@@ -16,7 +16,7 @@ metadata:
     alb.ingress.kubernetes.io/unhealthy-threshold-count: '2'
     alb.ingress.kubernetes.io/success-codes: '200'
 spec:
-  ingressClassName: alb
+  ingressClassName: {{ include "front.fullname" . }}
   rules:
   - host: mycdk-myk8s-example.com
     http:
@@ -25,6 +25,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: front-nodeport-service
+            name: {{ include "front.fullname" . }}
             port:
               number: 80
