@@ -2,10 +2,8 @@
 namespace: main
 fullnameOverride: ""
 nameOverride: ""
-
 domainName: mycdk-myk8s-example.com
 clusterName: eks-cluster
-
 front:
   replicaCount: 2
   imageTag: v0.0.1
@@ -24,7 +22,6 @@ front:
       limits:
         cpu: 500m
         memory: 256Mi
-
 externalDns:
   replicaCount: 2
   imageTag: v0.12.2
@@ -35,7 +32,6 @@ externalDns:
     limits:
       cpu: 600m
       memory: 512Mi
-
 dbSecrets:
 - envName: DB_HOST
   secretName: database-secrets
