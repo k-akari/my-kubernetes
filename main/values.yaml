@@ -26,7 +26,7 @@ front:
         memory: 256Mi
 
 externalDns:
-  replicaCount: 1
+  replicaCount: 2
   imageTag: v0.12.2
   resources:
     requests:

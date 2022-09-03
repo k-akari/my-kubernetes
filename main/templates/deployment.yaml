@@ -71,3 +71,19 @@ spec:
           {{- toYaml .Values.front.resources.web | nindent 10 }}
         ports: 
         - containerPort: 80
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - {{ include "main.name" . }}
+                - key: app.kubernetes.io/instance
+                  operator: In
+                  values:
+                  - {{ include "externalDns.instanceLabel" . }}
+              topologyKey: topology.kubernetes.io/zone
