@@ -16,7 +16,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: db-migrator
-        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-migration:{{ .Values.externalDns.imageTag }}
+        image: 575428171781.dkr.ecr.ap-northeast-1.amazonaws.com/eks-migration:{{ .Values.front.imageTag }}
         imagePullPolicy: Always
         resources:
           requests:
