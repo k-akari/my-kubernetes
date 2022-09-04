@@ -1,4 +1,3 @@
-# comment
 helmVersion: v3
 targetRevision: main
 namespace: main
