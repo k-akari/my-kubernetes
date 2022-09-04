@@ -4,3 +4,4 @@ awsRegion: ap-northeast-1
 awsAccount: 575428171781
 secretsManagerName: database-secrets
 secretRefreshInterval: 1h
+roleName: create-secret-from-secrets-manager-role
