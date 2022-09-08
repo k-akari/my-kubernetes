@@ -34,8 +34,8 @@ spec:
       securityContext:
         fsGroup: 65534
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   name: {{ include "front.fullname" . }}
   labels:
@@ -45,6 +45,10 @@ spec:
   selector:
     matchLabels:
       {{- include "front.selectorLabels" . | nindent 6 }}
+  strategy:
+    blueGreen:
+      activeService: {{ include "front.fullname" . }}
+      autoPromotionEnabled: true
   template:
     metadata:
       labels:
