@@ -1,3 +1,7 @@
 helmVersion: v3
 targetRevision: main
 namespace: main
+prometheus:
+  targetRevision: 39.11.0
+  namespace: monitoring
+  projectName: monitoring
