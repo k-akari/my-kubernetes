@@ -1,6 +1,8 @@
-helmVersion: v3
-targetRevision: main
-namespace: main
+main:
+  helmVersion: v3
+  targetRevision: main
+  namespace: main
+  projectName: myproject
 prometheus:
   targetRevision: 39.11.0
   namespace: monitoring

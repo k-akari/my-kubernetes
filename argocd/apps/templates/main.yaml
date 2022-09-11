@@ -8,19 +8,19 @@ metadata:
   labels:
     app.kubernetes.io/name: main
 spec:
-  project: myproject
+  project: {{ .Values.main.projectName }}
   source:
     repoURL: https://github.com/k-akari/myk8s.git
     path: main/
-    targetRevision: {{ .Values.targetRevision }}
+    targetRevision: {{ .Values.main.targetRevision }}
     helm:
       releaseName: myk8s
-      version: {{ .Values.helmVersion }}
+      version: {{ .Values.main.helmVersion }}
       valueFiles:
       - values.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: {{ .Values.namespace }}
+    namespace: {{ .Values.main.namespace }}
   syncPolicy:
     automated:
       prune: true
