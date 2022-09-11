@@ -5,7 +5,7 @@ domainName: mycdk-myk8s-example.com
 clusterName: eks-cluster
 front:
   replicaCount: 2
-  imageTag: 61deb6cc584556ac642d4e54ef5a6ce6fe626466
+  imageTag: a6a4391ef7b8dfafedee085c8f33375b91908920
   resources:
     app:
       requests:
