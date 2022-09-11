@@ -16,7 +16,10 @@ spec:
     helm:
       skipCrds: true
       values: |-
-        #Snip the values
+        serviceMonitorNamespaceSelector:
+          matchNames:
+          - main
+          - argocd
     chart: kube-prometheus-stack
   syncPolicy:
     automated:

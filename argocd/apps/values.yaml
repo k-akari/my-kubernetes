@@ -7,3 +7,6 @@ prometheus:
   targetRevision: 39.11.0
   namespace: monitoring
   projectName: monitoring
+keda:
+  targetRevision: 2.8.2
+  namespace: keda
