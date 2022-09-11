@@ -7,11 +7,11 @@ metadata:
 spec:
   endpoints:
     - path: /metrics
-      targetPort: http
+      targetPort: http-port
       interval: 30s
   selector:
     matchLabels:
       {{- include "front.selectorLabels" . | nindent 6 }}
   namespaceSelector:
     matchNames:
-    - main
+    - {{ .Values.namespace }}

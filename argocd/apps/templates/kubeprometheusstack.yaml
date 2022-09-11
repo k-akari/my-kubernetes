@@ -16,9 +16,18 @@ spec:
     helm:
       skipCrds: true
       values: |-
-        serviceMonitorSelectorNilUsesHelmValues: true
+        podMonitorNamespaceSelector:
+          any: true
+        podMonitorSelector: {}
+        podMonitorSelectorNilUsesHelmValues: false
+        ruleNamespaceSelector:
+          any: true
+        ruleSelector: {}
+        ruleSelectorNilUsesHelmValues: false
+        serviceMonitorNamespaceSelector:
+          any: true
         serviceMonitorSelector: {}
-        serviceMonitorNamespaceSelector: {}
+        serviceMonitorSelectorNilUsesHelmValues: false
     chart: kube-prometheus-stack
   syncPolicy:
     automated:
