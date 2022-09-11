@@ -12,3 +12,6 @@ spec:
   selector:
     matchLabels:
       {{- include "front.selectorLabels" . | nindent 6 }}
+  namespaceSelector:
+    matchNames:
+    - main
