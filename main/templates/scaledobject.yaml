@@ -18,5 +18,5 @@ spec:
     metadata:
       serverAddress: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
       metricName: access_frequency
-      query: sum(promhttp_metric_handler_requests_total[30s])
+      query: promhttp_metric_handler_requests_total[30s]
       threshold: "2"
