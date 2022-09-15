@@ -6,7 +6,7 @@ metadata:
   finalizers:
   - resources-finalizer.argocd.argoproj.io
 spec:
-  project: myproject
+  project: admin
   source:
     repoURL: https://github.com/k-akari/myk8s.git
     path: argocd/apps/

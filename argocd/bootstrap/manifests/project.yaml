@@ -1,6 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
+  name: admin
+  namespace: argocd
+spec:
+  # Deny all cluster-scoped resources from being created, except for Namespace
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  # Project description
+  description: Example infrastructure project
+  # Only permit applications to deploy to the guestbook namespace in the same cluster
+  destinations:
+  - namespace: '*'
+    server: '*'
+  # Allow manifests to deploy from any Git repos
+  sourceRepos:
+  - '*'
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
   name: myproject
   namespace: argocd
 spec:
