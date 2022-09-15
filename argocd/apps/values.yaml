@@ -10,3 +10,7 @@ prometheus:
 keda:
   targetRevision: 2.8.2
   namespace: keda
+argo:
+  projectName: default
+  targetRevision: 2.20.0
+  namespace: argocd

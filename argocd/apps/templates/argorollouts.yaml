@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-rollouts
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-3"
+spec:
+  project: {{ .Values.argo.projectName }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.argo.namespace }}
+  source:
+    chart: argo-rollouts
+    repoURL: https://argoproj.github.io/argo-helm
+    targetRevision: {{ .Values.argo.targetRevision }}
+    helm:
+      values: |-
+        controller:
+          metrics:
+            serviceMonitor:
+              enabled: "true"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

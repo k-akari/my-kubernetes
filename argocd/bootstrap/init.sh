@@ -19,7 +19,7 @@ fi
 svc_argocd=`kubectl get svc -n argocd -o json | jq -r '.items[] | .metadata.name' | grep argocd-applicationset-controller`
 if [ -z "$svc_argocd" ]; then
   echo -e "Start to apply ArgoCD manifest.\n"
-  kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  helm install argocd argo-cd/argo-cd --namespace argocd -f argocd/bootstrap/values.yaml --version "5.4.3"
   echo -e "\nApplying ArgoCD manifest"
   count=0
   while [ -z "$svc_argocd" ]; do
@@ -118,36 +118,6 @@ echo "Initial Password : $initial_password"
 echo "New Password     : $new_password"
 echo "*********************************************************************************************"
 echo -e "\n"
-
-# Install Argo Rollouts
-ns_argo_rollouts=`kubectl get ns -o json | jq -r '.items[] | .metadata.name' | grep argo-rollouts`
-if [ -z "$ns_argocd" ]; then
-  kubectl create namespace argo-rollouts
-else
-  echo -e "Namespace of argo-rollouts already exists\n"
-fi
-
-svc_argo_rollouts=`kubectl get svc -n argo-rollouts -o json | jq -r '.items[] | .metadata.name' | grep argo-rollouts-metrics`
-if [ -z "$svc_argo_rollouts" ]; then
-  echo -e "Start to install Argo Rollouts\n"
-  kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
-  echo -e "\Installing Argo Rollouts"
-  count=0
-  while [ -z "$svc_argo_rollouts" ]; do
-    count=`expr $count + 1`
-    if [ $count -gt 10 ]; then
-      echo -e "Timed out to install Argo Rollouts\n"
-      break
-    fi
-
-    echo -n "."
-    sleep 1
-    svc_argo_rollouts=`kubectl get svc -n argo-rollouts -o json | jq -r '.items[] | .metadata.name' | grep argo-rollouts-metrics`
-  done
-  echo -e "\nArgo Rollout has successfully installed\n"
-else
-  echo -e "Argo Rollouts has already been installed\n"
-fi
 
 # Deploy application
 kubectl apply -f ./argocd/bootstrap/manifests/project.yaml

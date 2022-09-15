@@ -1,0 +1,42 @@
+controller:
+  metrics:
+    serviceMonitor:
+      enabled: "true"
+      interval: 10s
+      namespace: argocd
+dex:
+  metrics:
+    serviceMonitor:
+      enabled: "true"
+      interval: 10s
+      namespace: argocd
+redis:
+  metrics:
+    serviceMonitor:
+      enabled: "true"
+      interval: 10s
+      namespace: argocd
+server:
+  metrics:
+    serviceMonitor:
+      enabled: "true"
+      interval: 10s
+      namespace: argocd
+repoServer:
+  metrics:
+    serviceMonitor:
+      enabled: "true"
+      interval: 10s
+      namespace: argocd
+applicationSet:
+  metrics:
+    serviceMonitor:
+      enabled: "true"
+      interval: 10s
+      namespace: argocd
+notifications:
+  metrics:
+    serviceMonitor:
+      enabled: "true"
+      interval: 10s
+      namespace: argocd
